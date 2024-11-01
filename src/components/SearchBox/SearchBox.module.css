@@ -1,0 +1,23 @@
+.divsearch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.searchinput {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 10px;
+}
+.tex {
+  font-size: x-large;
+}
+.input {
+  font-size: larger;
+  width: 340px;
+  height: 30px;
+  border: 2px solid grey;
+  border-radius: 16px;
+  padding: 8px;
+}
