@@ -1,13 +1,10 @@
 import styles from './ContactForm.module.css';
 import { ErrorMessage, Formik, Field, Form } from 'formik';
 import { useDispatch } from 'react-redux';
-import { nanoid } from 'nanoid';
-import { addContact } from '../../redux/contactsSlice';
-import { useId } from 'react';
+import { addContact } from '../../redux/contactsOps';
 import * as Yup from 'yup';
 
 const INITIAL_VALUES = {
-  id: '',
   name: '',
   number: '',
 };
@@ -29,19 +26,24 @@ const addContactShape = Yup.object({
 });
 
 const ContactForm = () => {
-  const nameInputId = useId();
-  const numberInputId = useId();
   const dispatch = useDispatch();
-  const handleSubmit = (values, actions) => {
+
+  const handleSubmit = async (values, actions) => {
     const contact = {
-      ...values,
-      id: nanoid(),
+      name: values.name,
+      number: values.number,
     };
 
-    const action = addContact(contact);
-    dispatch(action);
-    actions.resetForm();
+    try {
+      const action = await dispatch(addContact(contact)); 
+      if (addContact.fulfilled.match(action)) {
+        actions.resetForm(); 
+      }
+    } catch (error) {
+      console.error('Failed to save contact: ', error);
+    }
   };
+
   return (
     <div className={styles.divform}>
       <Formik
@@ -52,7 +54,7 @@ const ContactForm = () => {
         <Form className={styles.form}>
           <label className={styles.formname}>
             <span>Name</span>
-            <Field className={styles.input} name="name" type="text" id={nameInputId} />
+            <Field className={styles.input} name="name" type="text" />
             <ErrorMessage
               name="name"
               component="span"
